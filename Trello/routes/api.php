@@ -22,6 +22,7 @@ Route::controller(BoardController::class)->group(function (){
     Route::post('create', 'create');
     Route::post('delete', 'delete');
     Route::get('get_categories', 'get_categories');
+    Route::get('get_users', 'get_users');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

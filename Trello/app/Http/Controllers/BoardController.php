@@ -94,7 +94,37 @@ class BoardController extends Controller
         ]);
     }
     // get users
+    public function get_users(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        $result = DB::select(
+            "select COUNT(*) AS count FROM boards WHERE name = ? AND user_id = ?",
+            [$request->name, $user->id])[0]->count;
+        if ($result == 0) 
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'Board Does not Exists',
+                'user' => $user,
+                'board_name' => $request->name,
+            ]);
+        $board_id = DB::table('boards')->where('name', $request->name)->where('user_id', $user->id)->value('id');
+        $result = DB::table('board_users')->where('board_id', $board_id)->pluck('user_id')->toArray();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'There are no collaborators for this board',
+            'user' => $user,
+            'board_name' => $request->name,
+            'board_id' => $board_id,
+            'sql_result' => $result,
+        ]);
+    }
+    // add users
     
+
+    // remove users
     // edit wallpaper
     // change name
 }
