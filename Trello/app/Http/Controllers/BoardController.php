@@ -66,7 +66,35 @@ class BoardController extends Controller
         ]);
     }
     // get categories
+    public function get_categories(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        $result = DB::select(
+            "select COUNT(*) AS count FROM boards WHERE name = ? AND user_id = ?",
+            [$request->name, $user->id])[0]->count;
+        if ($result == 0) 
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'Board Does not Exists',
+                'user' => $user,
+                'board_name' => $request->name,
+            ]);
+        $board_id = DB::table('boards')->where('name', $request->name)->where('user_id', $user->id)->value('id');
+        $result = DB::table('categories')->where('board_id', $board_id)->value('id', 'name');
+        return response()->json([
+            'status' => 'failure',
+            'message' => 'Board Does not Exists',
+            'user' => $user,
+            'board_name' => $request->name,
+            'board_id' => $board_id,
+            'sql_result' => $result,
+        ]);
+    }
     // get users
+    
     // edit wallpaper
     // change name
 }
