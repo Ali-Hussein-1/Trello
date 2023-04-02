@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boards', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('background_image_url');
-            $table->foreignId('user_id')->references('id')->on('users');
-            $table->timestamps();
+        Schema::table('boards', function (Blueprint $table) {
+            $table->unique(['name', 'user_id']);
+            $table->string('background_image_url')->default("")->change();
         });
     }
 
