@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('description');
+            $table->dateTime('due_date');
             $table->foreignId('category_id')->references('id')->on('categories');
             $table->timestamps();
         });
