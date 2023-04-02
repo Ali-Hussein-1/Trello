@@ -122,7 +122,48 @@ class BoardController extends Controller
         ]);
     }
     // add users
-    
+    public function add_user(Request $request){
+        $request->validate([
+            'board_name' => 'required|string|max:255',
+            'user_name' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        $collaborator_id = DB::select(
+            "select COUNT(*) AS count FROM users WHERE name = ?",
+            [$request->user_name])[0]->count;
+        
+        // protect agains null user
+        if ($collaborator_id != 0) 
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'No such user exists',
+                'user' => $user,
+                'board_name' => $request->name,
+            ]);
+
+        $board_id = DB::select(
+            "select COUNT(*) AS count FROM users WHERE name = ?",
+            [$request->user_name])[0]->count;
+        
+        // protect agains null user
+        if ($board_id != 0) 
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'No such board exists',
+                'user' => $user,
+                'board_name' => $request->name,
+            ]);
+
+        DB::insert('insert into board_users (board_id, user_id) values (?, ?)', [$board_id, $collaborator_id]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Collaborator Addition Successful',
+            'user' => $user,
+            'board_name' => $request->name,
+        ]);
+    }
 
     // remove users
     // edit wallpaper
