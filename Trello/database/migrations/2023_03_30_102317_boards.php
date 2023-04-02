@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('background_image_url');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
+            $table->unique(['name', 'user_id']);
         });
     }
 
