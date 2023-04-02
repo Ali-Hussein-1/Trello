@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->forignId('board_id')->references('id')->on('boards');
             $table->timestamps();
         });
     }
