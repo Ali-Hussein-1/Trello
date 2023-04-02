@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('board_id')->constrained();
             $table->string('name');
-            $table->string('psition');
+            $table->string('position');
             $table->timestamps();
         });
     }
