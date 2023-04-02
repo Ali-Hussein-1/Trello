@@ -14,7 +14,7 @@ return new class extends Migration
         
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('board_id')->constrained();
+            $table->foreignId('board_id')->references('id')->on('boards');
             $table->string('name');
             $table->string('position');
             $table->timestamps();
