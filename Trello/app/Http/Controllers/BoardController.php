@@ -15,10 +15,12 @@ class BoardController extends Controller
         ]);
 
         $user = Auth::user();
+        $result = DB::select(
+            "select COUNT(*) AS count FROM boards WHERE name = ? AND user_id = ?",
+            [$request->name, $user->id])[0]->count;
         
-        if (DB::select(
-            "select COUNT(*) FROM boards WHERE name = ? AND user_id = ?",
-            [$request->name, $user->id])) 
+        // protect agains null user
+        if ($result != 0) 
             return response()->json([
                 'status' => 'failure',
                 'message' => 'Board Already Exists',
@@ -36,6 +38,33 @@ class BoardController extends Controller
         ]);
     }
     // delete
+    public function delete(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        $result = DB::select(
+            "select COUNT(*) AS count FROM boards WHERE name = ? AND user_id = ?",
+            [$request->name, $user->id])[0]->count;
+
+        if ($result == 0) 
+            return response()->json([
+                'status' => 'failure',
+                'message' => 'Board Already Does not Exists',
+                'user' => $user,
+                'board_name' => $request->name,
+            ]);
+
+        DB::delete('DELETE FROM boards WHERE name = ? AND user_id = ?', [$request->name, $user->id]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Board Deletion Successful',
+            'user' => $user,
+            'board_name' => $request->name,
+        ]);
+    }
     // get categories
     // get users
     // edit wallpaper

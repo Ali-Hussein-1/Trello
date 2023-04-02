@@ -15,6 +15,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(BoardController::class)->group(function (){
     Route::post('create', 'create');
+    Route::post('delete', 'delete');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
